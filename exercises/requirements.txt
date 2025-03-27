@@ -1,0 +1,7 @@
+openai==1.66.5
+langchain
+sentence-transformers
+transformers
+aitta-client
+tf-keras
+faiss-cpu
