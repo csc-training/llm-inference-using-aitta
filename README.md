@@ -6,3 +6,4 @@ Please head over to the course's [welcome page](./material/00_welcome.ipynb) in 
 
 
 <img src="./material/images/puhti-csc.jpg" width="600" height="300">
+
