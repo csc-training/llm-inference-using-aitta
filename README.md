@@ -4,6 +4,4 @@ Are you looking for an easy way to start using Large Language Models (LLMs)? Thi
 
 Please head over to the course's [welcome page](./material/00_welcome.ipynb) in the `material` folder to review the prerequisites and course setup details.
 
-
-<img src="./material/images/puhti-csc.jpg" width="600" height="300">
-
+![ai-image](./material/images/compressed_img.jpg)
