@@ -1,0 +1,11 @@
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Environments
+.env
+.envrc
+.venv
+
+
+# MyST build outputs
+_build/

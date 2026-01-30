@@ -1,0 +1,25 @@
+format: jb-book
+root: README.md
+
+parts:
+  - caption: Materials
+    chapters:
+      - file: material/README.md
+        sections:
+          - file: material/00_welcome.ipynb
+          - file: material/01_LLMs.ipynb
+          - file: material/02_inference.ipynb
+          - file: material/03_aitta.ipynb
+          - file: material/04_usecases_of_llms.ipynb
+
+  - caption: Exercises
+    chapters:
+      - file: exercises/README.md
+        sections:
+          - file: exercises/02_Poro-70B-instruct-completions.ipynb
+          - file: exercises/03_poro-tokenizer.ipynb
+          - file: exercises/04_prompt-testing.ipynb
+          - file: exercises/05_usecases_Poro-70B-instruct.ipynb
+          - file: exercises/06_summarizate-abstracts.ipynb
+          - file: exercises/07_rag_basics.ipynb
+          - file: exercises/08_simpleRAG-using-FAISS.ipynb

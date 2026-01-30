@@ -1,0 +1,19 @@
+title: LLM Inference using Aitta
+author: CSC Training
+logo: logos/LAIF_logo_dark.png
+
+execute:
+  execute_notebooks: off
+
+html:
+  use_repository_button: true
+  use_issues_button: true
+  use_edit_page_button: true
+
+repository:
+  url: https://github.com/csc-training/llm-inference-using-aitta
+  branch: main
+  path_to_book: .
+
+launch_buttons:
+  notebook_interface: jupyterlab
