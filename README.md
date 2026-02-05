@@ -15,3 +15,5 @@ Let us know by describing the mistake (which file and what needs fixing) in a ne
 Fork the repo, create a new branch, make your changes, push to your fork, and open a Pull Request.
 
 ![ai-image](./material/images/compressed_img.jpg)
+
+:)
