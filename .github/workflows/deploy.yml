@@ -1,0 +1,33 @@
+name: Deploy Jupyter Book to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.x'
+    
+    - name: Install dependencies
+      run: |
+        pip install "jupyter-book<2" "ghp-import==2.1.0"
+        # Add any other dependencies your notebooks need here
+    
+    - name: Build the Jupyter Book
+      run: |
+        jupyter-book build .
+    
+    - name: Deploy to GitHub Pages
+      run: |
+        ghp-import -n -p -f _build/html
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
