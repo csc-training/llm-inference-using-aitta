@@ -1,1 +1,3 @@
+# README.md
+
 Please head over to the course's [welcome page](./00_welcome.ipynb) to review the prerequisites and course setup details.
