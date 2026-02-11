@@ -1,0 +1,717 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>2. Inference - using trained LLMs &#8212; LLM Inference using Aitta</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=1ae7504c"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'material/02_inference';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="3. Aitta AI inference platform" href="03_aitta.html" />
+    <link rel="prev" title="1. Large Language Models (LLMs)" href="01_LLMs.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../README.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/LAIF_logo_dark.png" class="logo__image only-light" alt="LLM Inference using Aitta - Home"/>
+    <script>document.write(`<img src="../_static/LAIF_logo_dark.png" class="logo__image only-dark" alt="LLM Inference using Aitta - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../README.html">
+                    Introduction to using Large Language Models through inference platform Aitta
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Materials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="README.html">README.md</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="00_welcome.html">Welcome: Course introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_LLMs.html">1. Large Language Models (LLMs)</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">2. Inference - using trained LLMs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_aitta.html">3. Aitta AI inference platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_usecases_of_llms.html">4. Usecases of LLMs</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Exercises</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../exercises/README.html">Jupyter notebook exercises</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../exercises/02_Poro-70B-instruct-completions.html">Chat completions with LumiOpen/Llama-Poro-2-70B-Instruct</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../exercises/03_poro-tokenizer.html">Tokenize text using LumiOpen/Llama-Poro-2-70B-Instruct’s tokenizer</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../exercises/04_prompt-testing.html">Prompt testing</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../exercises/05_usecases_Poro-70B-instruct.html">Real use cases for chat-tuned models</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../exercises/06_summarizate-abstracts.html">Abstract summarization</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../exercises/07_rag_basics.html">Simple Retrieval Augmented Generation (RAG) Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exercises/08_simpleRAG-using-FAISS.html">Simple RAG example using Facebook AI Similarity Search (FAISS)</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/csc-training/llm-inference-using-aitta" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/csc-training/llm-inference-using-aitta/edit/main/./material/02_inference.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/csc-training/llm-inference-using-aitta/issues/new?title=Issue%20on%20page%20%2Fmaterial/02_inference.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/material/02_inference.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>2. Inference - using trained LLMs</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-inference">What is inference?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-and-memory-requirements-for-inference">Hardware and memory requirements for inference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-memory-requirements">Understanding memory requirements</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lumi-supercomputer-hardware-for-inference">LUMI supercomputer &amp; hardware for inference</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inference-deployment-options">Inference deployment options</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="inference-using-trained-llms">
+<h1>2. Inference - using trained LLMs<a class="headerlink" href="#inference-using-trained-llms" title="Link to this heading">#</a></h1>
+<section id="what-is-inference">
+<h2>What is inference?<a class="headerlink" href="#what-is-inference" title="Link to this heading">#</a></h2>
+<p>Inference refers to the process of using an AI model to generate predictions, produce outputs or perform specific tasks based on new input data.</p>
+<p>Inference enables real-world applications of LLMs, allowing users to interact with the model by providing prompts — text inputs that guide the model’s responses.</p>
+<p>During inference, the input text is tokenized (text data is chunked into pieces suitable for the model), processed by the model and transformed into a meaningful response. This process happens in real-time, but its speed and efficiency depend on the underlying hardware and model size.</p>
+<p>To better understand how sentences are tokenized, on of the upcoming exercise will demonstrate tokenization using the Poro-34B model. Tokenization varies depending on the model and is more complex than simply splitting a sentence into words. During tokenization, the text is broken into smaller chunks, which are then converted into token IDs that map to the model’s token vocabulary, since computers understand numbers rather than text. There is a web-based tool <a class="reference external" href="https://tiktokenizer.vercel.app/">Tiktokenizer</a>, for visualizing and experimenting with tokenization using OpenAI’s tiktoken library.</p>
+<p><strong>LLM inference process overview:</strong></p>
+<p><img alt="inference-process.png" src="../_images/inference-process.png" /></p>
+<ol class="arabic simple">
+<li><p><strong>Tokenization</strong></p>
+<ul class="simple">
+<li><p>The input text is broken down into smaller units (tokens).</p></li>
+</ul>
+</li>
+<li><p><strong>Processing</strong></p>
+<ul class="simple">
+<li><p>The model processes the tokens through its layers, analyzing context and predicting the most likely next token(s) based on prior information and learned patterns.</p></li>
+</ul>
+</li>
+<li><p><strong>Generation</strong></p>
+<ul class="simple">
+<li><p>The model generates the most probable continuation of the input, forming a coherent response based on learned probabilities.</p></li>
+</ul>
+</li>
+<li><p><strong>Decoding</strong></p>
+<ul class="simple">
+<li><p>The predicted tokens are decoded into human-readable text.</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="hardware-and-memory-requirements-for-inference">
+<h2>Hardware and memory requirements for inference<a class="headerlink" href="#hardware-and-memory-requirements-for-inference" title="Link to this heading">#</a></h2>
+<p>Inference is generally less computationally demanding than training. However, many large-scale inference tasks require GPU acceleration for efficiency. The computational requirements depend on the size and complexity of the model:</p>
+<ul class="simple">
+<li><p>Small models can run on a CPU, but this is generally slower.</p></li>
+<li><p>Larger models require GPU acceleration to achieve smooth performance.</p></li>
+</ul>
+<section id="understanding-memory-requirements">
+<h3>Understanding memory requirements<a class="headerlink" href="#understanding-memory-requirements" title="Link to this heading">#</a></h3>
+<p>This part is based on the text “Working with large language models on supercomputers” from <a class="reference external" href="https://docs.csc.fi/support/tutorials/ml-llm/">CSC Docs</a>.</p>
+<p>To run an LLM on a GPU, the entire model must fit into GPU memory (VRAM). The memory required depends on:</p>
+<ul class="simple">
+<li><p>Model size (number of parameters/weights).</p></li>
+<li><p>Precision of stored weights (floating-point format).</p></li>
+</ul>
+<p>Each model parameter (weight) is stored as a floating-point number. Typically a regular floating-point value in a computer is stored in a format called fp32, which uses 32 bits of memory, or 4 bytes (remember 8 bits = 1 byte). In deep learning, 16-bit floating point formats (fp16 of bf16) have been used for a long time to speed up part of the computation. These use 2 bytes of memory per weight. The memory needed for inference can be estimated using the formula:</p>
+<div class="math notranslate nohighlight">
+\[
+\text{Memory Required} = \text{Number of Parameters} \times \text{Bytes per Weight}
+\]</div>
+<p><strong>Floating-point precision &amp; memory usage</strong></p>
+<p>Different floating-point formats affect memory usage:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Floating-Point format</p></th>
+<th class="head"><p>Bits per weight</p></th>
+<th class="head"><p>Bytes per weight</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>FP32 (Single Precision)</p></td>
+<td><p>32 bits</p></td>
+<td><p>4 bytes</p></td>
+</tr>
+<tr class="row-odd"><td><p>FP16 (Half Precision)</p></td>
+<td><p>16 bits</p></td>
+<td><p>2 bytes</p></td>
+</tr>
+<tr class="row-even"><td><p>BF16 (Brain Floating Point)</p></td>
+<td><p>16 bits</p></td>
+<td><p>2 bytes</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Usually LLMs require gigabytes of memory since parameter amount is usually in billions and 1 GB = 1 024 MB = ~1 000 000 000 bytes.</p>
+<p>The model size in memory is then the number of parameters times the number of bytes needed for storing a single weight. For example a 30 billion parameter model with fp16 takes up 60 GB of memory. In practice for inference there’s up to 20% overhead so you might actually need around 70 GB of memory.</p>
+</section>
+</section>
+<section id="lumi-supercomputer-hardware-for-inference">
+<h2>LUMI supercomputer &amp; hardware for inference<a class="headerlink" href="#lumi-supercomputer-hardware-for-inference" title="Link to this heading">#</a></h2>
+<p>LUMI is one of Europe’s most powerful AI supercomputers, designed to handle massive computations required for AI and scientific research. LUMI is one of the hardware components behind Aitta Inference platform.</p>
+<p><strong>Key hardware components:</strong></p>
+<ul class="simple">
+<li><p>AMD Instinct MI250X GPUs: High-performance graphics processors designed for AI and machine learning.</p></li>
+<li><p>Multi-GPU Setup: LUMI has 2,978 nodes, each equipped with 4 MI250X GPUs.</p></li>
+<li><p>AMD EPYC “Trento” CPU: A powerful processor with 64 cores that coordinates GPU operations.</p></li>
+</ul>
+<p><strong>Understanding the MI250X GPU:</strong></p>
+<p>Each MI250X GPU is not just one GPU but two in a single package (this design is called a multi-chip module). These two chips, known as Graphics Compute Dies (GCDs), work together to accelerate computations.</p>
+<ul class="simple">
+<li><p>Each MI250X GPU contains 220 processing units (110 per chip).</p></li>
+<li><p>It has a total of 128GB of memory, split between the two chips (64GB per chip).</p></li>
+<li><p>This high-speed memory (HBM) allows the GPU to quickly process large amounts of data.</p></li>
+</ul>
+<p>Depending on the model, it might not fit into memory of one GPU (one GCD in LUMI has 64GB memory). Then you would need to scale up to use multiple GPUs together.</p>
+<p>Further reading see <a class="reference external" href="https://docs.lumi-supercomputer.eu/hardware/lumig/">https://docs.lumi-supercomputer.eu/hardware/lumig/</a></p>
+</section>
+<section id="inference-deployment-options">
+<h2>Inference deployment options<a class="headerlink" href="#inference-deployment-options" title="Link to this heading">#</a></h2>
+<p>LLMs can be deployed in various ways, depending on the available hardware, performance needs, and privacy considerations.</p>
+<ul class="simple">
+<li><p><strong>Local execution</strong> – Running models on your own hardware (laptop, workstation or local server).</p></li>
+<li><p><strong>Cloud-based execution</strong> – Using cloud VMs, dedicated AI hardware, or supercomputers.</p></li>
+<li><p><strong>API access</strong> – Calling models hosted by a third-party via specialized APIs.</p></li>
+</ul>
+<p>There are pros and cons in different approaches:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Deployment method</p></th>
+<th class="head"><p>Pros</p></th>
+<th class="head"><p>Cons</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>Local execution</strong></p></td>
+<td><p>Full control, data privacy, lower/no recurring costs</p></td>
+<td><p>Requires high-end hardware, limited scalability</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>Cloud VMs &amp; supercomputers</strong></p></td>
+<td><p>Scalable, access to high-performance GPUs</p></td>
+<td><p>Can be expensive, requires network connectivity</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>API-based services</strong></p></td>
+<td><p>Easy access, no hardware setup</p></td>
+<td><p>Potential data privacy concerns, dependent on provider</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Each method serves different needs, from running models privately on personal machines to leveraging cloud infrastructure for large-scale AI applications. The right choice depends on factors like cost, privacy, ease of use, and computational power.<br />
+For more information on inference using supercomputers, check out this <a class="reference external" href="https://docs.csc.fi/support/tutorials/ml-llm/#inference">CSC Docs</a> page. You can also explore the <a class="reference external" href="https://github.com/CSCfi/ai-inference-examples"><strong>ai-inference-examples</strong></a> repository on CSC’s GitHub for examples of using LLMs on CSC’s supercomputers.</p>
+<p>There are also <strong>user interfaces</strong> that access third-party models through user-friendly interfaces (e.g., ChatGPT, Copilot). They provide an optimized experience for users, but with limited control over model behavior and customization. These applications rely on third-party APIs and are subject to the provider’s limitations and data privacy considerations.</p>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h2>
+<p>By now, you might see why running large language models on a personal laptop isn’t feasible — these models require significant computational power. That’s why accessing dedicated AI infrastructure is essential.</p>
+<p>Next, we’ll explore Aitta, an AI inference platform that provides both a web-based user interface and API access for seamless model interaction. Let’s move on to next section, <a class="reference internal" href="03_aitta.html"><span class="std std-doc"><strong>Aitta - AI Inference platform</strong></span></a>.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./material"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="01_LLMs.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">1. Large Language Models (LLMs)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="03_aitta.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">3. Aitta AI inference platform</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-inference">What is inference?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#hardware-and-memory-requirements-for-inference">Hardware and memory requirements for inference</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-memory-requirements">Understanding memory requirements</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#lumi-supercomputer-hardware-for-inference">LUMI supercomputer &amp; hardware for inference</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#inference-deployment-options">Inference deployment options</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By CSC Training
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

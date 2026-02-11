@@ -1,0 +1,885 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Real use cases for chat-tuned models &#8212; LLM Inference using Aitta</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=1ae7504c"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'exercises/05_usecases_Poro-70B-instruct';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Abstract summarization" href="06_summarizate-abstracts.html" />
+    <link rel="prev" title="Prompt testing" href="04_prompt-testing.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../README.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/LAIF_logo_dark.png" class="logo__image only-light" alt="LLM Inference using Aitta - Home"/>
+    <script>document.write(`<img src="../_static/LAIF_logo_dark.png" class="logo__image only-dark" alt="LLM Inference using Aitta - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../README.html">
+                    Introduction to using Large Language Models through inference platform Aitta
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Materials</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../material/README.html">README.md</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../material/00_welcome.html">Welcome: Course introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../material/01_LLMs.html">1. Large Language Models (LLMs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../material/02_inference.html">2. Inference - using trained LLMs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../material/03_aitta.html">3. Aitta AI inference platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../material/04_usecases_of_llms.html">4. Usecases of LLMs</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Exercises</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="README.html">Jupyter notebook exercises</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="02_Poro-70B-instruct-completions.html">Chat completions with LumiOpen/Llama-Poro-2-70B-Instruct</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="03_poro-tokenizer.html">Tokenize text using LumiOpen/Llama-Poro-2-70B-Instruct’s tokenizer</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="04_prompt-testing.html">Prompt testing</a></li>
+
+
+
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Real use cases for chat-tuned models</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="06_summarizate-abstracts.html">Abstract summarization</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="07_rag_basics.html">Simple Retrieval Augmented Generation (RAG) Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08_simpleRAG-using-FAISS.html">Simple RAG example using Facebook AI Similarity Search (FAISS)</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/csc-training/llm-inference-using-aitta" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/csc-training/llm-inference-using-aitta/edit/main/./exercises/05_usecases_Poro-70B-instruct.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/csc-training/llm-inference-using-aitta/issues/new?title=Issue%20on%20page%20%2Fexercises/05_usecases_Poro-70B-instruct.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/exercises/05_usecases_Poro-70B-instruct.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Real use cases for chat-tuned models</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Real use cases for chat-tuned models</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#table-of-content">Table of content</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sentiment-analysis-of-feedback">1. Sentiment analysis of feedback   <a class="anchor" id="Sentiment-analysis-of-feedback"></a></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#text-summarization">2. Text summarization <a class="anchor" id="Text-summarization"></a></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#retrieving-relevant-research-papers">3. Retrieving relevant research papers <a class="anchor" id="Retrieving-relevant-research-papers"></a></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#named-entity-recognition-ner-for-extracting-key-information">4. Named entity recognition (NER) for extracting key information <a class="anchor" id="NER"></a></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extracting-key-topics-from-research-papers">5. Extracting key topics from research papers <a class="anchor" id="Extracting-key-topics"></a></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#refining-academic-writing">6. Refining academic writing <a class="anchor" id="Refining-academic-writing"></a></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#translation-from-finnish-to-english">7. Translation from Finnish to English <a class="anchor" id="Translation"></a></a></li>
+</ul>
+</li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="real-use-cases-for-chat-tuned-models">
+<h1>Real use cases for chat-tuned models<a class="headerlink" href="#real-use-cases-for-chat-tuned-models" title="Link to this heading">#</a></h1>
+<p>After the previous exercise, you are now capable of using the <code class="docutils literal notranslate"><span class="pre">Llama-Poro-2-70B-Instruct</span></code> model through the API that the <code class="docutils literal notranslate"><span class="pre">aitta_client</span></code> provides.</p>
+<p>After the client confugurations we will create a function to get response that takes a promt as an input. It uses always the same model and the role is user. Only the content varies.</p>
+<p>After configuring the client, we will create a function to get responses that take a prompt as input. You can also customize the maximum token count. It always uses the same model, and the role is “user.” Only the content varies.</p>
+<p>In this section, we will explore several real-world use cases where chat-tuned models can be applied. The following table of contents outlines the different use cases covered in this notebook.</p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="table-of-content">
+<h1>Table of content<a class="headerlink" href="#table-of-content" title="Link to this heading">#</a></h1>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="#Sentiment-analysis-of-feedback"><span class="xref myst">Sentiment analysis of feedback</span></a></p></li>
+<li><p><a class="reference internal" href="#Text-summarization"><span class="xref myst">Text summarization</span></a></p></li>
+<li><p><a class="reference internal" href="#Retrieving-relevant-research-papers"><span class="xref myst">Retrieving relevant research papers</span></a></p></li>
+<li><p><a class="reference internal" href="#NER"><span class="xref myst">Named entity recognition (NER)</span></a></p></li>
+<li><p><a class="reference internal" href="#Extracting-key-topics"><span class="xref myst">Extracting key topics</span></a></p></li>
+<li><p><a class="reference internal" href="#Refining-academic-writing"><span class="xref myst">Refining academic writing</span></a></p></li>
+<li><p><a class="reference internal" href="#Translation"><span class="xref myst">Translation from Finnish to English</span></a></p></li>
+</ol>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">api_key</span> <span class="o">=</span> <span class="s2">&quot;&lt;API-KEY&gt;&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">aitta_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">Client</span><span class="p">,</span> <span class="n">StaticAccessTokenSource</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">openai</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">IPython</span>
+
+
+<span class="n">token_source</span> <span class="o">=</span> <span class="n">StaticAccessTokenSource</span><span class="p">(</span><span class="n">api_key</span><span class="p">)</span>
+<span class="n">aitta_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;https://api-staging-aitta.2.rahtiapp.fi&quot;</span><span class="p">,</span> <span class="n">token_source</span><span class="p">)</span>
+
+<span class="c1"># load the &quot;allenai/OLMo-7B-0724-Instruct&quot; model</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">Model</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;LumiOpen/Llama-Poro-2-70B-Instruct&quot;</span><span class="p">,</span> <span class="n">aitta_client</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+
+<span class="c1"># configure OpenAI client to use the Aitta OpenAI compatibility endpoints</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">openai</span><span class="o">.</span><span class="n">OpenAI</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">token_source</span><span class="o">.</span><span class="n">get_access_token</span><span class="p">(),</span> <span class="n">base_url</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">openai_api_url</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">get_response</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="n">max_completion_tokens</span><span class="o">=</span><span class="mi">100</span><span class="p">):</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+        <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">prompt</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+        <span class="n">n</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">max_completion_tokens</span><span class="o">=</span><span class="n">max_completion_tokens</span><span class="p">,</span>
+        <span class="n">stream</span><span class="o">=</span><span class="kc">False</span>  <span class="c1"># response streaming is currently not supported by Aitta</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="sentiment-analysis-of-feedback">
+<h2>1. Sentiment analysis of feedback   <a class="anchor" id="Sentiment-analysis-of-feedback"></a><a class="headerlink" href="#sentiment-analysis-of-feedback" title="Link to this heading">#</a></h2>
+<p>Sentiment analysis is a natural language processing (NLP) technique used to determine the emotional tone behind text. It classifies text into categories such as <strong>Positive, Neutral, or Negative</strong>.</p>
+<p>In this example, we use an LLM to process research-related feedback and automatically assign sentiment labels.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">instructs</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">You are an assistant who classifies text into different categories by sentiment. </span>
+<span class="s2">Classify listed feedbacks into neutral, negative or positive.</span>
+<span class="s2">Format your response as JSON with &#39;feedback_id&#39; and &#39;category&#39; keys.</span>
+<span class="s2">Provide only the JSON.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">feedback_texts</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">1. &quot;The research process was smooth, and I got the results I needed quickly.&quot;</span>
+<span class="s2">2. &quot;It took a long time to receive my dataset, but the quality was acceptable.&quot;</span>
+<span class="s2">3. &quot;I was extremely frustrated with the lack of communication and support.&quot;</span>
+<span class="s2">4. &quot;The documentation was helpful, though I had to figure out some details myself.&quot;</span>
+<span class="s2">5. &quot;Fantastic support and very well-organized data!&quot;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">prompt</span> <span class="o">=</span> <span class="n">instructs</span> <span class="o">+</span> <span class="n">feedback_texts</span>
+<span class="c1"># Get sentiment analysis response</span>
+<span class="n">sentiment_analysis</span> <span class="o">=</span> <span class="n">get_response</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span><span class="n">sentiment_analysis</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="text-summarization">
+<h2>2. Text summarization <a class="anchor" id="Text-summarization"></a><a class="headerlink" href="#text-summarization" title="Link to this heading">#</a></h2>
+<p>LLMs can quickly extract key insights from long research papers.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">summarize_paper</span><span class="p">(</span><span class="n">abstract</span><span class="p">):</span>
+    <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    You are a helpful summariser.</span>
+<span class="s2">    Summarize the key findings and contributions in a three bullet points of the following research </span>
+<span class="s2">    abstract:</span><span class="se">\n</span><span class="si">{</span><span class="n">abstract</span><span class="si">}</span><span class="s2">. Keep your answer clear and concise.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">get_response</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+
+<span class="c1">#https://arxiv.org/pdf/1706.03762: Attention Is All You Need</span>
+<span class="n">abstract</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">The dominant sequence transduction models are based on complex recurrent or</span>
+<span class="s2">convolutional neural networks that include an encoder and a decoder. The best</span>
+<span class="s2">performing models also connect the encoder and decoder through an attention</span>
+<span class="s2">mechanism. We propose a new simple network architecture, the Transformer,</span>
+<span class="s2">based solely on attention mechanisms, dispensing with recurrence and convolutions</span>
+<span class="s2">entirely. Experiments on two machine translation tasks show these models to</span>
+<span class="s2">be superior in quality while being more parallelizable and requiring significantly</span>
+<span class="s2">less time to train. Our model achieves 28.4 BLEU on the WMT 2014 English-</span>
+<span class="s2">to-German translation task, improving over the existing best results, including</span>
+<span class="s2">ensembles, by over 2 BLEU. On the WMT 2014 English-to-French translation task,</span>
+<span class="s2">our model establishes a new single-model state-of-the-art BLEU score of 41.8 after</span>
+<span class="s2">training for 3.5 days on eight GPUs, a small fraction of the training costs of the</span>
+<span class="s2">best models from the literature. We show that the Transformer generalizes well to</span>
+<span class="s2">other tasks by applying it successfully to English constituency parsing both with</span>
+<span class="s2">large and limited training data</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">summary</span> <span class="o">=</span> <span class="n">summarize_paper</span><span class="p">(</span><span class="n">abstract</span><span class="p">)</span>
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span><span class="n">summary</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="retrieving-relevant-research-papers">
+<h2>3. Retrieving relevant research papers <a class="anchor" id="Retrieving-relevant-research-papers"></a><a class="headerlink" href="#retrieving-relevant-research-papers" title="Link to this heading">#</a></h2>
+<p>Researchers often need to find relevant papers based on specific topics, keywords, or publication years. Manually searching through large datasets can be time-consuming, but LLMs can assist by understanding queries and retrieving relevant research papers.</p>
+<p>In this example, we use an LLM to search through a small mock dataset of research papers. The model identifies papers related to a given query, such as topics on <strong>climate change, biodiversity or agriculture</strong>, and filters results accordingly.</p>
+<p>After that we try to create a mock dataset using LLM.</p>
+<p><em>Mock data means random data that follows a predefined column format</em>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Mock dataset of research papers, created by AI</span>
+<span class="n">research_papers</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Impact of Climate Change on Marine Life&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2023</span><span class="p">,</span> <span class="s2">&quot;keywords&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;climate change&quot;</span><span class="p">,</span> <span class="s2">&quot;marine life&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Biodiversity and Ecosystem Services in Urban Areas&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2022</span><span class="p">,</span> <span class="s2">&quot;keywords&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;biodiversity&quot;</span><span class="p">,</span> <span class="s2">&quot;urban areas&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Climate Change Effects on Agriculture&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2021</span><span class="p">,</span> <span class="s2">&quot;keywords&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;climate change&quot;</span><span class="p">,</span> <span class="s2">&quot;agriculture&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Biodiversity Loss in Coral Reef Ecosystems&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2023</span><span class="p">,</span> <span class="s2">&quot;keywords&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;biodiversity&quot;</span><span class="p">,</span> <span class="s2">&quot;coral reefs&quot;</span><span class="p">,</span> <span class="s2">&quot;climate change&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Sustainable Energy Solutions and Climate Mitigation&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2022</span><span class="p">,</span> <span class="s2">&quot;keywords&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;renewable energy&quot;</span><span class="p">,</span> <span class="s2">&quot;climate change&quot;</span><span class="p">,</span> <span class="s2">&quot;sustainability&quot;</span><span class="p">]},</span>
+    <span class="p">{</span><span class="s2">&quot;title&quot;</span><span class="p">:</span> <span class="s2">&quot;Conservation Strategies for Endangered Species&quot;</span><span class="p">,</span> <span class="s2">&quot;year&quot;</span><span class="p">:</span> <span class="mi">2023</span><span class="p">,</span> <span class="s2">&quot;keywords&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;conservation&quot;</span><span class="p">,</span> <span class="s2">&quot;biodiversity&quot;</span><span class="p">,</span> <span class="s2">&quot;endangered species&quot;</span><span class="p">]}</span>
+<span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">query_research_papers</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">dataset</span><span class="p">):</span>
+    <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Given the following research papers, find those relevant to the query: </span><span class="si">{</span><span class="n">query</span><span class="si">}</span><span class="se">\n</span><span class="s2">Dataset: </span><span class="si">{</span><span class="n">dataset</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">get_response</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+
+<span class="n">query</span> <span class="o">=</span> <span class="s2">&quot;Find all papers published on climate change in year 2023. List the papers by titles without description.&quot;</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">query_research_papers</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">research_papers</span><span class="p">)</span>
+<span class="c1">#print(f&quot;Query Response: {response}&quot;)</span>
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span><span class="n">response</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prompt</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Do not respond as an assistant. Ensure strict JSON compliance.</span>
+<span class="s2">Generate a mock dataset of research papers about climate change from the years 2015 to 2025.</span>
+
+<span class="s2">Return the output **strictly** as a valid JSON array, without any additional text, explanations, or formatting. The JSON array should contain multiple objects, each with the following keys:</span>
+<span class="s2">- &quot;title&quot; (string): The research paper title.</span>
+<span class="s2">- &quot;year&quot; (integer): A publication year between 2015 and 2025.</span>
+<span class="s2">- &quot;keywords&quot; (array of strings): Relevant keywords for the paper.</span>
+
+<span class="s2">### Output Format:</span>
+<span class="s2">```json</span>
+<span class="s2">[</span>
+<span class="s2">  {&quot;title&quot;: &quot;Impact of Climate Change on Marine Life&quot;, &quot;year&quot;: 2018, &quot;keywords&quot;: [&quot;climate change&quot;, &quot;marine life&quot;]},</span>
+<span class="s2">  {&quot;title&quot;: &quot;AI and Climate Modeling&quot;, &quot;year&quot;: 2023, &quot;keywords&quot;: [&quot;AI&quot;, &quot;climate modeling&quot;]}</span>
+<span class="s2">]</span>
+<span class="s2">DO NOT include any explanations, introductions, or additional text. Only return valid JSON with 5 objects. </span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="n">create_mock_dataset</span> <span class="o">=</span> <span class="n">get_response</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="mi">300</span><span class="p">)</span>
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span><span class="n">create_mock_dataset</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="named-entity-recognition-ner-for-extracting-key-information">
+<h2>4. Named entity recognition (NER) for extracting key information <a class="anchor" id="NER"></a><a class="headerlink" href="#named-entity-recognition-ner-for-extracting-key-information" title="Link to this heading">#</a></h2>
+<p>Named Entity Recognition (NER) is a natural language processing (NLP) task that involves identifying and classifying key entities in a given text. These entities can include people, organizations, locations, dates, and other specific terms that essential for understanding the content. NER is widely used in information extraction systems, question answering, and text summarization.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">#https://okm.fi/en/-/new-supercomputer-to-be-located-in-kajaani-finland-gains-stronger-role-in-ai-research</span>
+<span class="n">text</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">The European High Performance Computing Joint Undertaking (EuroHPC) has selected the sites </span>
+<span class="s2">that will host the new European AI Factories. The AI factory consists of a supercomputer that</span>
+<span class="s2">provides world-class computing power as well as completely new data sources together with </span>
+<span class="s2">a service centre and talent pool.</span>
+
+<span class="s2">Of the seven funded projects, one belongs to the LUMI consortium, which is led by Finland. </span>
+<span class="s2">The LUMI AI Factory will be hosted by CSC - IT Center for Science and located in Kajaani.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Identify and list the key named entities (people, organizations, places) in the following text:</span><span class="se">\n</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">. </span>
+<span class="s2">Prove key entities in concise way.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">entities</span> <span class="o">=</span> <span class="n">get_response</span><span class="p">(</span><span class="n">prompt</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+<span class="c1">#print(f&quot;Named Entities: {entities}&quot;)</span>
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span><span class="n">entities</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="extracting-key-topics-from-research-papers">
+<h2>5. Extracting key topics from research papers <a class="anchor" id="Extracting-key-topics"></a><a class="headerlink" href="#extracting-key-topics-from-research-papers" title="Link to this heading">#</a></h2>
+<p>In this section, we use an LLM to automatically extract the most important keywords from a research paper. Keywords are essential for identifying the core topics and concepts of the text, which is valuable for summarizing and categorizing research. The function <code class="docutils literal notranslate"><span class="pre">extract_keywords()</span></code> takes the input text, constructs a prompt to instruct the model to identify key terms, and returns a list of significant keywords. This process helps quickly understand the main focus of the research without needing to read the entire paper.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">extract_keywords</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Extract 5 most important keywords from the following abstract:</span><span class="se">\n</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">get_response</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+
+<span class="c1">#https://www.researchgate.net/publication/361665646_Evaluating_GPU_Programming_Models_for_the_LUMI_Supercomputer</span>
+<span class="n">research_abstract</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">It is common in the HPC community that the achieved performance with just CPUs is limited </span>
+<span class="s2">for many computational cases. The EuroHPC pre-exascale and the coming exascale systems are </span>
+<span class="s2">mainly focused on accelerators, and some of the largest upcoming supercomputers such as LUMI </span>
+<span class="s2">and Frontier will be powered by AMD Instinct™ accelerators. However, these new systems create</span>
+<span class="s2">many challenges for developers who are not familiar with the new ecosystem or with the </span>
+<span class="s2">required programming models that can be used to program for heterogeneous architectures. </span>
+<span class="s2">In this paper, we present some of the more well-known programming models to program for </span>
+<span class="s2">current and future GPU systems. We then measure the performance of each approach using a </span>
+<span class="s2">benchmark and a mini-app, test with various compilers, and tune the codes where necessary. </span>
+<span class="s2">Finally, we compare the performance, where possible, between the NVIDIA Volta (V100), </span>
+<span class="s2">Ampere (A100) GPUs, and the AMD MI100 GPU.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">keywords</span> <span class="o">=</span> <span class="n">extract_keywords</span><span class="p">(</span><span class="n">research_abstract</span><span class="p">)</span>
+
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span><span class="n">keywords</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="refining-academic-writing">
+<h2>6. Refining academic writing <a class="anchor" id="Refining-academic-writing"></a><a class="headerlink" href="#refining-academic-writing" title="Link to this heading">#</a></h2>
+<p>In this section, we use an LLM to improve the clarity, grammar, and readability of a rough draft of an academic research paragraph. The function <code class="docutils literal notranslate"><span class="pre">improve_writing()</span></code> sends a prompt to the model, instructing it to enhance the provided text while preserving scientific accuracy.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Draft of a research paragraph</span>
+<span class="n">rough_paragraph</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">The usage of AI in biomedical sciences is growing rapidly. </span>
+<span class="s2">However, due to the complexity of the models and the necessity of big data, </span>
+<span class="s2">it sometimes leads to issues in explainability and reproducibility of results. </span>
+<span class="s2">As a consequence, scientists are investigating methods to make AI models more transparent, </span>
+<span class="s2">which in turn could improve trust in AI-based medical diagnoses.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="c1"># Prompt for improving clarity, grammar, and readability</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">improve_writing</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    You excell at academic writing. Improve the clarity, grammar, and readability of the following </span>
+<span class="s2">    academic text while maintaining its scientific accuracy:</span><span class="se">\n</span><span class="si">{</span><span class="n">text</span><span class="si">}</span>
+<span class="s2">    Response strictly the corrected text.</span>
+<span class="s2">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">get_response</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+
+<span class="c1"># Generate the improved version</span>
+<span class="n">improved_text</span> <span class="o">=</span> <span class="n">improve_writing</span><span class="p">(</span><span class="n">rough_paragraph</span><span class="p">)</span>
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span><span class="n">improved_text</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="translation-from-finnish-to-english">
+<h2>7. Translation from Finnish to English <a class="anchor" id="Translation"></a><a class="headerlink" href="#translation-from-finnish-to-english" title="Link to this heading">#</a></h2>
+<p>In this section, we use an LLM to translate text from Finnish to English. The function <code class="docutils literal notranslate"><span class="pre">translate()</span></code> sends a prompt to the model, instructing it to translate the provided text into English.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">translate</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="n">prompt</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Translate the following text from Finnish to English:</span><span class="se">\n</span><span class="si">{</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">return</span> <span class="n">get_response</span><span class="p">(</span><span class="n">prompt</span><span class="p">)</span>
+
+<span class="n">finnish_text</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">Tekoälyn soveltaminen terveydenhuollossa tarjoaa merkittäviä mahdollisuuksia, mutta samalla se tuo mukanaan myös haasteita, </span>
+<span class="s2">kuten mallien läpinäkyvyyden puutteen ja tulosten toistettavuuden ongelmat. Näiden haasteiden ratkaisemiseksi tutkijat </span>
+<span class="s2">kehittävät keinoja, joilla tekoälyn mallit olisivat ymmärrettävämpiä ja luotettavampia.</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+<span class="n">translated_text</span> <span class="o">=</span> <span class="n">translate</span><span class="p">(</span><span class="n">finnish_text</span><span class="p">)</span>
+
+<span class="n">IPython</span><span class="o">.</span><span class="n">display</span><span class="o">.</span><span class="n">Markdown</span><span class="p">(</span><span class="n">translated_text</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./exercises"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="04_prompt-testing.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Prompt testing</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="06_summarizate-abstracts.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Abstract summarization</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">Real use cases for chat-tuned models</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#table-of-content">Table of content</a><ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#sentiment-analysis-of-feedback">1. Sentiment analysis of feedback   <a class="anchor" id="Sentiment-analysis-of-feedback"></a></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#text-summarization">2. Text summarization <a class="anchor" id="Text-summarization"></a></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#retrieving-relevant-research-papers">3. Retrieving relevant research papers <a class="anchor" id="Retrieving-relevant-research-papers"></a></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#named-entity-recognition-ner-for-extracting-key-information">4. Named entity recognition (NER) for extracting key information <a class="anchor" id="NER"></a></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#extracting-key-topics-from-research-papers">5. Extracting key topics from research papers <a class="anchor" id="Extracting-key-topics"></a></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#refining-academic-writing">6. Refining academic writing <a class="anchor" id="Refining-academic-writing"></a></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#translation-from-finnish-to-english">7. Translation from Finnish to English <a class="anchor" id="Translation"></a></a></li>
+</ul>
+</li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By CSC Training
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

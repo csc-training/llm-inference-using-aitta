@@ -1,0 +1,1015 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Simple Retrieval Augmented Generation (RAG) Example &#8212; LLM Inference using Aitta</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=1ae7504c"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>window.MathJax = {"options": {"processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'exercises/07_rag_basics';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Simple RAG example using Facebook AI Similarity Search (FAISS)" href="08_simpleRAG-using-FAISS.html" />
+    <link rel="prev" title="Abstract summarization" href="06_summarizate-abstracts.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../README.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/LAIF_logo_dark.png" class="logo__image only-light" alt="LLM Inference using Aitta - Home"/>
+    <script>document.write(`<img src="../_static/LAIF_logo_dark.png" class="logo__image only-dark" alt="LLM Inference using Aitta - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../README.html">
+                    Introduction to using Large Language Models through inference platform Aitta
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Materials</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../material/README.html">README.md</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../material/00_welcome.html">Welcome: Course introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../material/01_LLMs.html">1. Large Language Models (LLMs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../material/02_inference.html">2. Inference - using trained LLMs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../material/03_aitta.html">3. Aitta AI inference platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../material/04_usecases_of_llms.html">4. Usecases of LLMs</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Exercises</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="README.html">Jupyter notebook exercises</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="02_Poro-70B-instruct-completions.html">Chat completions with LumiOpen/Llama-Poro-2-70B-Instruct</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="03_poro-tokenizer.html">Tokenize text using LumiOpen/Llama-Poro-2-70B-Instruct’s tokenizer</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="04_prompt-testing.html">Prompt testing</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="05_usecases_Poro-70B-instruct.html">Real use cases for chat-tuned models</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="06_summarizate-abstracts.html">Abstract summarization</a></li>
+
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">Simple Retrieval Augmented Generation (RAG) Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="08_simpleRAG-using-FAISS.html">Simple RAG example using Facebook AI Similarity Search (FAISS)</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/csc-training/llm-inference-using-aitta" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/csc-training/llm-inference-using-aitta/edit/main/./exercises/07_rag_basics.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/csc-training/llm-inference-using-aitta/issues/new?title=Issue%20on%20page%20%2Fexercises/07_rag_basics.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/exercises/07_rag_basics.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Simple Retrieval Augmented Generation (RAG) Example</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-rag">What is RAG?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-flow-in-rag-applications">Data flow in RAG applications</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steps-in-this-exercise">Steps in this exercise</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-an-embedding-model">Choosing an embedding model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#check-model-s-max-sequence-length-embeddings-dimension">Check model’s <code class="docutils literal notranslate"><span class="pre">max_sequence_length</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">embeddings_dimension</span></code>?</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chunking-the-text">Chunking the text</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-text-splitter">Setting up the text splitter</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initializing-a-simple-vector-database">Initializing a simple vector database</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#find-relevant-text-chunks-using-cosine-similarity">Find relevant text chunks using cosine similarity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-rag-with-chat-model">Using RAG with chat-model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-api-client-and-model-to-use-rag">Setting up the API client and model to use RAG</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Using RAG with chat-model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Setting up the API client and model to use RAG</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#api-key-configuration-and-model-loading"><strong>API Key Configuration and model loading</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#openai-compatibility"><strong>OpenAI compatibility</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="simple-retrieval-augmented-generation-rag-example">
+<h1>Simple Retrieval Augmented Generation (RAG) Example<a class="headerlink" href="#simple-retrieval-augmented-generation-rag-example" title="Link to this heading">#</a></h1>
+<section id="what-is-rag">
+<h2>What is RAG?<a class="headerlink" href="#what-is-rag" title="Link to this heading">#</a></h2>
+<p>Retrieval Augmented Generation (RAG) is a technique that <strong>enhances LLM responses</strong> by retrieving relevant context from an external knowledge source before generating an answer. Instead of relying only on the model’s training data, <strong>RAG fetches real-time information</strong> to improve accuracy.</p>
+</section>
+<section id="data-flow-in-rag-applications">
+<h2>Data flow in RAG applications<a class="headerlink" href="#data-flow-in-rag-applications" title="Link to this heading">#</a></h2>
+<p>In RAG, data indexing is the process of organizing and storing large datasets in a structured way, making it easier to quickly search and retrieve relevant information. Retrieval involves querying the indexed data to find the most relevant documents or pieces of information for a given input or question. Generation refers to using the retrieved data to generate a coherent and contextually appropriate response, leveraging the information from the documents to enhance the accuracy and relevance of the output.</p>
+<p><img alt="" src="../_images/rag-pipeline-v2.png" /></p>
+</section>
+<section id="steps-in-this-exercise">
+<h2>Steps in this exercise<a class="headerlink" href="#steps-in-this-exercise" title="Link to this heading">#</a></h2>
+<ol class="arabic simple">
+<li><p><strong>Chunk the text using embedding model</strong>: We begin by loading a sample document to use as our knowledge source. We’ll then split the document into smaller, manageable pieces (chunks) based on the embedding model’s context length. This is crucial because LLMs often have token limits, and chunking ensures that each piece of text can be processed effectively.</p></li>
+<li><p><strong>Create embeddings and store in a vector database</strong>: Next, we convert each chunk into a vector representation using a sentence embedding model. The resulting vectors capture the meaning of each text chunk. We then store these embeddings in a simple list that acts as our vector database.</p></li>
+<li><p><strong>Cosine similarity - find relevant text chunks</strong>: To retrieve the most relevant text, we encode the query using the same embedding model and then calculate the cosine similarity between the query’s vector and the vectors of the text chunks. The cosine similarity score helps us determine which text chunks are most similar to the query. The higher the score, the more relevant the chunk is.</p></li>
+<li><p><strong>Set up LLM and gerenate response with RAG</strong>: Finally, we pass the query and the retrieved context to an LLM (Large Language Model). The LLM will use the retrieved context to generate a more informed, accurate response. By combining retrieval with generation, we ensure the model has access to up-to-date or domain-specific information that might not have been part of its training data.</p></li>
+</ol>
+<hr class="docutils" />
+<p>This exercise a simplified implementation of RAG, designed to help you understand the core logic behind the process. There are various ways to optimize and scale this process in real-world applications.</p>
+<p>At the moment, it is not possible to create embeddings using the Python client provided by Aitta. However, we will use the Sentence Transformers library for creating embeddings. LLM usage is possible as in other exercises.</p>
+<p>Let’s get started!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Open the file &quot;ai_factories.txt&quot; in read mode to be used</span>
+<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s2">&quot;ai_factories.txt&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">text</span><span class="p">[:</span><span class="mi">500</span><span class="p">])</span>  <span class="c1"># Print first 500 characters to check the content</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="choosing-an-embedding-model">
+<h2>Choosing an embedding model<a class="headerlink" href="#choosing-an-embedding-model" title="Link to this heading">#</a></h2>
+<p>For this example, we are using <a class="reference external" href="https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2"><strong><code class="docutils literal notranslate"><span class="pre">all-MiniLM-L6-v2</span></code></strong></a>, a small and efficient sentence transformer model.</p>
+<ul class="simple">
+<li><p>It is lightweight and can run on CPUs, making it suitable for our current environment.</p></li>
+<li><p>In the future, we could generate embeddings using <strong>Aitta API</strong>, which allows us to leverage GPU acceleration for faster processing.</p></li>
+</ul>
+<section id="check-model-s-max-sequence-length-embeddings-dimension">
+<h3>Check model’s <code class="docutils literal notranslate"><span class="pre">max_sequence_length</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">embeddings_dimension</span></code>?<a class="headerlink" href="#check-model-s-max-sequence-length-embeddings-dimension" title="Link to this heading">#</a></h3>
+<p>Before chunking text, we need to understand the model’s constraints:</p>
+<ol class="arabic simple">
+<li><p><strong>Max sequence length</strong> (also known as <strong>context length</strong> or <strong>max input tokens</strong> – The maximum number of tokens the model can process in a single pass.</p></li>
+<li><p><strong>Embedding dimension</strong> – The size of the vector (numerical representation) generated by the model for each input sentence.</p></li>
+</ol>
+<p>Below, we initialize the model and check these properties.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sentence_transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SentenceTransformer</span>
+
+<span class="c1"># Load the embedding model</span>
+<span class="n">embedding_model</span> <span class="o">=</span> <span class="n">SentenceTransformer</span><span class="p">(</span><span class="s2">&quot;sentence-transformers/all-MiniLM-L6-v2&quot;</span><span class="p">)</span>
+
+<span class="c1"># Print model properties</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Max Sequence Length:&quot;</span><span class="p">,</span> <span class="n">embedding_model</span><span class="o">.</span><span class="n">max_seq_length</span><span class="p">)</span>  <span class="c1"># Context length</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Embedding Dimension:&quot;</span><span class="p">,</span> <span class="n">embedding_model</span><span class="o">.</span><span class="n">get_sentence_embedding_dimension</span><span class="p">())</span>  <span class="c1"># Vector size</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="chunking-the-text">
+<h2>Chunking the text<a class="headerlink" href="#chunking-the-text" title="Link to this heading">#</a></h2>
+<p>Since our embedding model has a <strong>maximum sequence length</strong>, we need to split the document into smaller, manageable chunks. This ensures that:</p>
+<ul class="simple">
+<li><p>Each chunk fits within the <strong>model’s token limit</strong> for accurate embedding.</p></li>
+<li><p>Sentences remain intact by <strong>splitting at logical points</strong> (e.g., periods, question marks).</p></li>
+</ul>
+<section id="setting-up-the-text-splitter">
+<h3>Setting up the text splitter<a class="headerlink" href="#setting-up-the-text-splitter" title="Link to this heading">#</a></h3>
+<p>We use <code class="docutils literal notranslate"><span class="pre">RecursiveCharacterTextSplitter</span></code> from <a class="reference external" href="https://github.com/langchain-ai/langchain"><strong>LangChain</strong></a>, with these parameters:</p>
+<ul class="simple">
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">chunk_size</span></code></strong> → Defines the maximum number of tokens per chunk.</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">chunk_overlap</span></code></strong> → Ensures that chunks share overlapping content to maintain continuity (if set to a value greater than 0)</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">separators</span></code></strong> → Defines where the text is split (e.g., at new paragraphs or punctuation).</p></li>
+<li><p><strong><code class="docutils literal notranslate"><span class="pre">length_function</span></code></strong> → Uses a tokenizer to count tokens instead of characters for accurate chunking. Without this, splitting is based on character count, which may lead to incorrect chunk sizes.</p></li>
+</ul>
+<p>Next, we <strong>split the document into chunks</strong> and verify their correctness.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">langchain.text_splitter</span><span class="w"> </span><span class="kn">import</span> <span class="n">RecursiveCharacterTextSplitter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoTokenizer</span>
+
+<span class="c1"># Load the tokenizer to count tokens accurately</span>
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;sentence-transformers/all-MiniLM-L6-v2&quot;</span><span class="p">)</span>
+
+<span class="c1"># Function to count tokens in a text chunk</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">count_tokens</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">add_special_tokens</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="c1"># Setting up the text splitter</span>
+<span class="n">text_splitter</span> <span class="o">=</span> <span class="n">RecursiveCharacterTextSplitter</span><span class="p">(</span>
+    <span class="n">chunk_size</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>  <span class="c1"># Limit each chunk to 50 tokens (small for demonstration)</span>
+    <span class="n">chunk_overlap</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>  <span class="c1"># No overlap between chunks in this case</span>
+    <span class="n">length_function</span><span class="o">=</span><span class="n">count_tokens</span><span class="p">,</span>  <span class="c1"># Use token-based counting instead of character count</span>
+    <span class="n">separators</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;. &quot;</span><span class="p">,</span> <span class="s2">&quot;? &quot;</span><span class="p">,</span> <span class="s2">&quot;! &quot;</span><span class="p">]</span>  <span class="c1"># Prioritize splitting at paragraph or sentence boundaries</span>
+<span class="p">)</span>
+
+<span class="c1"># Split the document into smaller chunks</span>
+<span class="n">chunks</span> <span class="o">=</span> <span class="n">text_splitter</span><span class="o">.</span><span class="n">split_text</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+
+<span class="c1">#  Display chunk statistics and example</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Total chunks created: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">chunks</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Show total number of chunks</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample chunk:</span><span class="se">\n</span><span class="si">{</span><span class="n">chunks</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Print the first chunk as an example</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Tokens in first chunk: </span><span class="si">{</span><span class="n">count_tokens</span><span class="p">(</span><span class="n">chunks</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>  <span class="c1"># Verify token count in the first chunk</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Uncomment to see tokens in the first chunk</span>
+<span class="c1"># tokenizer.tokenize(chunks[0])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="initializing-a-simple-vector-database">
+<h2>Initializing a simple vector database<a class="headerlink" href="#initializing-a-simple-vector-database" title="Link to this heading">#</a></h2>
+<p>In this example, we use a <strong>simple vector database</strong> (a list stored in memory) to store the text chunks and their corresponding embeddings. Each text chunk is transformed into a vector representation using the embedding model. The initialized <code class="docutils literal notranslate"><span class="pre">VECTOR_DB</span></code> is a list of dictionaries, where each entry contains a <strong>text chunk</strong> and its corresponding <strong>embedding vector</strong>, enabling efficient retrieval and comparison of text data for the RAG process.</p>
+<p>However, in real-world applications, it’s typically more efficient to use dedicated vector databases or indexing libraries like <strong>FAISS</strong>, which are optimized for storing and retrieving high-dimensional vectors. These libraries support fast similarity search, making them essential for handling large datasets.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initializing a simple vector database as a list</span>
+<span class="n">VECTOR_DB</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Iterate through the chunks of text, generate embeddings, and store them in the VECTOR_DB</span>
+<span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">chunks</span><span class="p">:</span>
+    <span class="n">embedding</span> <span class="o">=</span> <span class="n">embedding_model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">chunk</span><span class="p">)</span>  <span class="c1"># Convert the text chunk into a vector representation</span>
+    
+    <span class="c1"># Append the chunk and its corresponding embedding to the vector database</span>
+    <span class="n">VECTOR_DB</span><span class="o">.</span><span class="n">append</span><span class="p">({</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">chunk</span><span class="p">,</span> <span class="s2">&quot;embedding&quot;</span><span class="p">:</span> <span class="n">embedding</span><span class="p">})</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Stored </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">VECTOR_DB</span><span class="p">)</span><span class="si">}</span><span class="s2"> chunks in VECTOR_DB.&quot;</span><span class="p">)</span>  <span class="c1"># Display the number of stored chunks</span>
+
+<span class="c1"># Display a sample entry</span>
+<span class="n">sample_entry</span> <span class="o">=</span> <span class="n">VECTOR_DB</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">embedding_sample</span> <span class="o">=</span> <span class="n">sample_entry</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">][:</span><span class="mi">5</span><span class="p">]</span>
+<span class="n">text_sample</span> <span class="o">=</span> <span class="n">sample_entry</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Sample entry:</span><span class="se">\n</span><span class="s2">Text: </span><span class="si">{</span><span class="n">text_sample</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Embedding (first 5 values): </span><span class="si">{</span><span class="n">embedding_sample</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="find-relevant-text-chunks-using-cosine-similarity">
+<h2>Find relevant text chunks using cosine similarity<a class="headerlink" href="#find-relevant-text-chunks-using-cosine-similarity" title="Link to this heading">#</a></h2>
+<p>To perform retrieval, we need to embed a query and then compare it to the stored vectors in the vector database. The goal is to find the most relevant text chunks based on the similarity between the query’s embedding and the embeddings stored in the vector database.</p>
+<p>We will use <strong>Cosine Similarity</strong> to measure how similar the query’s embedding is to each of the stored embeddings.</p>
+<p><strong>Cosine Similarity</strong> measures the cosine of the angle between two non-zero vectors, which is a measure of similarity between them. The formula is:</p>
+<div class="math notranslate nohighlight">
+\[
+\text{cosine\_similarity} = \frac{{A \cdot B}}{{\|A\| \|B\|}}
+\]</div>
+<p>Where:</p>
+<ul class="simple">
+<li><p>A and B are the vectors to be compared.</p></li>
+<li><p>The <strong>dot product</strong> A dot B is calculated by multiplying corresponding components of the vectors and summing the results.</p></li>
+<li><p>The result is then divided by the product of the magnitudes of the vectors, A and B.</p></li>
+</ul>
+<p>Cosine similarity ranges from -1 to 1:</p>
+<ul class="simple">
+<li><p><strong>1</strong> means that the two vectors are identical (maximum similarity).</p></li>
+<li><p><strong>0</strong> means that the two vectors are orthogonal (no similarity).</p></li>
+<li><p><strong>-1</strong> means that the two vectors are diametrically opposite (maximum dissimilarity).</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># https://huggingface.co/blog/ngxson/make-your-own-rag</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cosine_similarity</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+  <span class="n">dot_product</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)])</span>
+  <span class="n">norm_a</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span>
+  <span class="n">norm_b</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">b</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span>
+  <span class="k">return</span> <span class="n">dot_product</span> <span class="o">/</span> <span class="p">(</span><span class="n">norm_a</span> <span class="o">*</span> <span class="n">norm_b</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Example query text </span>
+<span class="n">query_text</span> <span class="o">=</span> <span class="s2">&quot;What is the goal of AI factories in Europe?&quot;</span>
+
+<span class="c1"># Generate the embedding for the query</span>
+<span class="n">query_embedding</span> <span class="o">=</span> <span class="n">embedding_model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">query_text</span><span class="p">)</span>
+
+<span class="c1"># Now, calculate the cosine similarity between the query embedding and each embedding in the VECTOR_DB</span>
+<span class="n">similarities</span> <span class="o">=</span> <span class="p">[]</span>
+
+<span class="c1"># Iterate over VECTOR_DB to calculate similarity with each stored chunk</span>
+<span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">VECTOR_DB</span><span class="p">:</span>
+    <span class="n">stored_embedding</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span>
+    
+    <span class="c1"># Calculate cosine similarity</span>
+    <span class="n">similarity</span> <span class="o">=</span> <span class="n">cosine_similarity</span><span class="p">(</span><span class="n">query_embedding</span><span class="p">,</span> <span class="n">stored_embedding</span><span class="p">)</span>
+    <span class="n">similarities</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">entry</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">],</span> <span class="n">similarity</span><span class="p">))</span>
+
+<span class="c1"># Sort the results by similarity in descending order and show the most similar entries</span>
+<span class="n">similarities</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+
+<span class="c1"># Display the top 3 most similar chunks</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Text and it&#39;s similarity to test query:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">similarities</span><span class="p">)):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Similarity: </span><span class="si">{</span><span class="n">similarities</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Text: </span><span class="si">{</span><span class="n">similarities</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">][:</span><span class="mi">200</span><span class="p">]</span><span class="si">}</span><span class="s2">...&quot;</span><span class="p">)</span>  <span class="c1"># Display only first 200 characters of the text</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;#######&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># uncomment to check datatype of embeddings</span>
+<span class="c1">#type(VECTOR_DB[0][&#39;embedding&#39;])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="using-rag-with-chat-model">
+<h2>Using RAG with chat-model<a class="headerlink" href="#using-rag-with-chat-model" title="Link to this heading">#</a></h2>
+<p>Let’s combine it all together to generate responses!</p>
+<p>In this section, we are going to use the <strong>RAG</strong> technique to generate a meaningful and contextually aware answer to a user’s query. The process involves combining the power of <strong>embedding-based vector search</strong> with a chat-model <a class="reference external" href="https://huggingface.co/LumiOpen/Poro-34B-chat"><code class="docutils literal notranslate"><span class="pre">LumiOpen/Poro-34B-chat</span></code></a> to provide an informed response. We use a previously generated vector database.</p>
+<section id="setting-up-the-api-client-and-model-to-use-rag">
+<h3>Setting up the API client and model to use RAG<a class="headerlink" href="#setting-up-the-api-client-and-model-to-use-rag" title="Link to this heading">#</a></h3>
+<p>We will configure the API client and load the LLM that will be used for generating responses within the RAG framework.</p>
+<p><strong>API Key Configuration and model loading</strong><br />
+First, we configure the <strong>Aitta-client</strong> with an access token and API URL to authenticate and interact with the AI model. This setup allows us to securely communicate with the model and load the required resources.</p>
+<p><strong>OpenAI compatibility</strong><br />
+Next, we set up the <strong>OpenAI client</strong> to point to the AI model’s OpenAI-compatible API endpoint. This enables us to send queries and receive responses through the OpenAI-compatible interface provided by Aitta.</p>
+<p>After completing these setup steps, the model is ready to be used. We need to embedd the query, retrieve relevant text chunks and generate response using instuction prompt together with query and retrieved texts. We can then  send queries along with the retrieved context to generate informed responses based on the retrieved knowledge.</p>
+</section>
+</section>
+<section id="id1">
+<h2>Using RAG with chat-model<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
+<p>Let’s combine it all together to generate responses!</p>
+<p>In this section, we are going to use the <strong>RAG</strong> technique to generate a meaningful and contextually aware answer to a user’s query. The process involves combining the power of <strong>embedding-based vector search</strong> with a chat-model <code class="docutils literal notranslate"><span class="pre">LumiOpen/Llama-Poro-2-70B-Instruct</span></code> to provide an informed response. We use a previously generated vector database.</p>
+<section id="id2">
+<h3>Setting up the API client and model to use RAG<a class="headerlink" href="#id2" title="Link to this heading">#</a></h3>
+<p>We will configure the API client and load the LLM that will be used for generating responses within the RAG framework.</p>
+<section id="api-key-configuration-and-model-loading">
+<h4><strong>API Key Configuration and model loading</strong><a class="headerlink" href="#api-key-configuration-and-model-loading" title="Link to this heading">#</a></h4>
+<p>First, we configure the <strong>Aitta-client</strong> with an access token and API URL to authenticate and interact with the AI model. This setup ensures secure communication between the client and the model, allowing us to load the necessary resources for generating responses.</p>
+</section>
+<section id="openai-compatibility">
+<h4><strong>OpenAI compatibility</strong><a class="headerlink" href="#openai-compatibility" title="Link to this heading">#</a></h4>
+<p>Next, we set up the <strong>OpenAI client</strong>. This step enables us to send queries and receive responses through an OpenAI-compatibility provided by Aitta.</p>
+<p>After completing these setup steps, the model is ready for use. We will then:</p>
+<ul class="simple">
+<li><p><strong>Embed the query</strong>: Convert the user’s query into a vector representation.</p></li>
+<li><p><strong>Retrieve relevant text chunks</strong>: Search the vector database for the most relevant chunks based on the query’s embedding.</p></li>
+<li><p><strong>Generate a response</strong>: Use the retrieved context, the query, and an instruction prompt to guide the model’s response generation.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set your personal model-specific API key here  </span>
+<span class="n">api_key</span> <span class="o">=</span> <span class="s2">&quot;&lt;API-KEY&gt;&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">openai</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">aitta_client</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span><span class="p">,</span> <span class="n">Client</span><span class="p">,</span> <span class="n">StaticAccessTokenSource</span>
+
+<span class="c1"># configure Client instance with API URL and access token</span>
+<span class="n">token_source</span> <span class="o">=</span> <span class="n">StaticAccessTokenSource</span><span class="p">(</span><span class="n">api_key</span><span class="p">)</span>
+<span class="n">aitta_client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;https://api-staging-aitta.2.rahtiapp.fi&quot;</span><span class="p">,</span> <span class="n">token_source</span><span class="p">)</span>
+
+<span class="c1"># load the LumiOpen/Poro-34B-chat model</span>
+<span class="n">poro_model</span> <span class="o">=</span> <span class="n">Model</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s2">&quot;LumiOpen/Llama-Poro-2-70B-Instruct&quot;</span><span class="p">,</span> <span class="n">aitta_client</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">poro_model</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+
+<span class="c1"># configure OpenAI client to use the Aitta OpenAI compatibility endpoints</span>
+<span class="n">client</span> <span class="o">=</span> <span class="n">openai</span><span class="o">.</span><span class="n">OpenAI</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">token_source</span><span class="o">.</span><span class="n">get_access_token</span><span class="p">(),</span> <span class="n">base_url</span><span class="o">=</span><span class="n">poro_model</span><span class="o">.</span><span class="n">openai_api_url</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># https://huggingface.co/blog/ngxson/make-your-own-rag</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cosine_similarity</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+  <span class="n">dot_product</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">x</span> <span class="o">*</span> <span class="n">y</span> <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)])</span>
+  <span class="n">norm_a</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">a</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span>
+  <span class="n">norm_b</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">x</span> <span class="o">**</span> <span class="mi">2</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">b</span><span class="p">])</span> <span class="o">**</span> <span class="mf">0.5</span>
+  <span class="k">return</span> <span class="n">dot_product</span> <span class="o">/</span> <span class="p">(</span><span class="n">norm_a</span> <span class="o">*</span> <span class="n">norm_b</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Function to retrieve top N most relevant chunks using cosine similarity</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">retrieve</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">top_n</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+    <span class="n">query_embedding</span> <span class="o">=</span> <span class="n">embedding_model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">query</span><span class="p">)</span>
+    <span class="c1">#print(type(query_embedding))</span>
+    
+    <span class="n">similarities</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">entry</span> <span class="ow">in</span> <span class="n">VECTOR_DB</span><span class="p">:</span>
+
+        <span class="n">chunk</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;text&quot;</span><span class="p">]</span>
+        <span class="n">embedding</span> <span class="o">=</span> <span class="n">entry</span><span class="p">[</span><span class="s2">&quot;embedding&quot;</span><span class="p">]</span> 
+     
+        <span class="n">similarity</span> <span class="o">=</span> <span class="n">cosine_similarity</span><span class="p">(</span><span class="n">query_embedding</span><span class="p">,</span> <span class="n">embedding</span><span class="p">)</span> 
+        <span class="n">similarities</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">chunk</span><span class="p">,</span> <span class="n">similarity</span><span class="p">))</span>
+        
+    <span class="n">similarities</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">similarities</span><span class="p">[:</span><span class="n">top_n</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">input_query</span> <span class="o">=</span> <span class="s2">&quot;What are AI factories?&quot;</span>
+<span class="n">retrieved_knowledge</span> <span class="o">=</span> <span class="n">retrieve</span><span class="p">(</span><span class="n">input_query</span><span class="p">)</span>
+
+<span class="c1"># UNCOMMENT lines below to see retrieved text chunks</span>
+<span class="c1">#print(&#39;Retrieved knowledge:&#39;)</span>
+<span class="c1">#for chunk, similarity in retrieved_knowledge:</span>
+<span class="c1">#  print(f&#39; - (similarity: {similarity:.2f}) {chunk}&#39;)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Format the context for the prompt</span>
+<span class="n">instruction_prompt</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">You are a helpful chatbot.</span>
+<span class="s2">Use only the following pieces of context to answer the question. Don&#39;t make up any new information:</span>
+<span class="s2">&quot;&quot;&quot;</span>
+<span class="c1"># Add the chunks to instruction prompt</span>
+<span class="n">instruction_prompt</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="sa">f</span><span class="s1">&#39; - </span><span class="si">{</span><span class="n">chunk</span><span class="si">}</span><span class="s1">&#39;</span> <span class="k">for</span> <span class="n">chunk</span><span class="p">,</span> <span class="n">similarity</span> <span class="ow">in</span> <span class="n">retrieved_knowledge</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Instruction prompt: </span><span class="si">{</span><span class="n">instruction_prompt</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Call the OpenAI API to generate the response using the retrieved context</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">instruction_prompt</span> <span class="o">+</span> <span class="n">input_query</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">poro_model</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+    <span class="n">stream</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># Display the answer</span>
+<span class="n">answer</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Answer:&quot;</span><span class="p">,</span> <span class="n">answer</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Finally</strong> we can test how the model would have answered the query without using external data.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Call the OpenAI API to generate the response using the retrieved context</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">chat</span><span class="o">.</span><span class="n">completions</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+    <span class="n">messages</span><span class="o">=</span><span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;role&quot;</span><span class="p">:</span> <span class="s2">&quot;user&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;content&quot;</span><span class="p">:</span> <span class="n">input_query</span> <span class="c1">#Use ONLY input query</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="n">model</span><span class="o">=</span><span class="n">poro_model</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+    <span class="n">stream</span><span class="o">=</span><span class="kc">False</span>
+<span class="p">)</span>
+
+<span class="c1"># Display the answer</span>
+<span class="n">answer</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">choices</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">message</span><span class="o">.</span><span class="n">content</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Answer:&quot;</span><span class="p">,</span> <span class="n">answer</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="conclusion">
+<h2>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h2>
+<p>In this notebook, we covered the foundational steps of RAG. In real-world use cases, it’s essential to use optimized vector databases for efficient search and retrieval. This removes the need for manually coding search functions, like the cosine similarity example demonstrated earlier, where we computed similarities between vectors manually.</p>
+<p>In contrast, using optimized libraries like FAISS abstracts away much of this complexity, allowing for faster and more scalable retrieval. In the next exercise, we’ll continue with a simple example, introducing FAISS to show how it enhances vector search and retrieval performance.</p>
+<p>Next exercise: <a class="reference internal" href="08_simpleRAG-using-FAISS.html"><span class="std std-doc">08_simpleRAG-using-FAISS.ipynb</span></a></p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./exercises"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="06_summarizate-abstracts.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Abstract summarization</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="08_simpleRAG-using-FAISS.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Simple RAG example using Facebook AI Similarity Search (FAISS)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-is-rag">What is RAG?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-flow-in-rag-applications">Data flow in RAG applications</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#steps-in-this-exercise">Steps in this exercise</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#choosing-an-embedding-model">Choosing an embedding model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#check-model-s-max-sequence-length-embeddings-dimension">Check model’s <code class="docutils literal notranslate"><span class="pre">max_sequence_length</span></code> &amp; <code class="docutils literal notranslate"><span class="pre">embeddings_dimension</span></code>?</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#chunking-the-text">Chunking the text</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-text-splitter">Setting up the text splitter</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#initializing-a-simple-vector-database">Initializing a simple vector database</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#find-relevant-text-chunks-using-cosine-similarity">Find relevant text chunks using cosine similarity</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-rag-with-chat-model">Using RAG with chat-model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#setting-up-the-api-client-and-model-to-use-rag">Setting up the API client and model to use RAG</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">Using RAG with chat-model</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#id2">Setting up the API client and model to use RAG</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#api-key-configuration-and-model-loading"><strong>API Key Configuration and model loading</strong></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#openai-compatibility"><strong>OpenAI compatibility</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By CSC Training
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

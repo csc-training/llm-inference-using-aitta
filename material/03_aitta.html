@@ -1,0 +1,656 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>3. Aitta AI inference platform &#8212; LLM Inference using Aitta</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=1ae7504c"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'material/03_aitta';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="4. Usecases of LLMs" href="04_usecases_of_llms.html" />
+    <link rel="prev" title="2. Inference - using trained LLMs" href="02_inference.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../README.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/LAIF_logo_dark.png" class="logo__image only-light" alt="LLM Inference using Aitta - Home"/>
+    <script>document.write(`<img src="../_static/LAIF_logo_dark.png" class="logo__image only-dark" alt="LLM Inference using Aitta - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../README.html">
+                    Introduction to using Large Language Models through inference platform Aitta
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Materials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="README.html">README.md</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="00_welcome.html">Welcome: Course introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="01_LLMs.html">1. Large Language Models (LLMs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02_inference.html">2. Inference - using trained LLMs</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">3. Aitta AI inference platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_usecases_of_llms.html">4. Usecases of LLMs</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Exercises</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../exercises/README.html">Jupyter notebook exercises</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../exercises/02_Poro-70B-instruct-completions.html">Chat completions with LumiOpen/Llama-Poro-2-70B-Instruct</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../exercises/03_poro-tokenizer.html">Tokenize text using LumiOpen/Llama-Poro-2-70B-Instruct’s tokenizer</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../exercises/04_prompt-testing.html">Prompt testing</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../exercises/05_usecases_Poro-70B-instruct.html">Real use cases for chat-tuned models</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../exercises/06_summarizate-abstracts.html">Abstract summarization</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../exercises/07_rag_basics.html">Simple Retrieval Augmented Generation (RAG) Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exercises/08_simpleRAG-using-FAISS.html">Simple RAG example using Facebook AI Similarity Search (FAISS)</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/csc-training/llm-inference-using-aitta" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/csc-training/llm-inference-using-aitta/edit/main/./material/03_aitta.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/csc-training/llm-inference-using-aitta/issues/new?title=Issue%20on%20page%20%2Fmaterial/03_aitta.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/material/03_aitta.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>3. Aitta AI inference platform</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-aitta-api-and-python-client">Understanding Aitta API and Python Client</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resource-management">Resource management</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-chat-based-llms-with-aitta-api">Using chat-based LLMs with Aitta API</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#aitta-as-one-of-the-mlops-tools">Aitta as one of the MLOps tools</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-time">Exercise time!</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1-log-into-aitta-website">Exercise 1: Log into Aitta website</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-2-chat-completions-with-lumiopen-poro-34b-chat-model">Exercise 2: Chat completions with LumiOpen/Poro-34B-chat model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-3-tokenize-text-using-lumiopen-llama-poro-2-70b-base-model-s-tokenizer">Exercise 3: Tokenize text using LumiOpen/Llama-Poro-2-70B-base model’s tokenizer</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next steps</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="aitta-ai-inference-platform">
+<h1>3. Aitta AI inference platform<a class="headerlink" href="#aitta-ai-inference-platform" title="Link to this heading">#</a></h1>
+<p><a class="reference external" href="https://staging-aitta.2.rahtiapp.fi/"><strong>Aitta</strong></a> is an AI inference platform with a model catalog designed for research and development purposes. Aitta offers you an easy way to utilize powerful LLMs and other AI models through Python API client.</p>
+<p>Aitta is easy to use: it has a Web UI (user interface) and a simple OpenAI compatible REST API. To be able to use this API, you need to log in to <a class="reference external" href="https://staging-aitta.2.rahtiapp.fi/">Aitta’s webpage</a>. Then you are able to create API keys that enable you to access the models.</p>
+<p>While its development is ongoing and uploading custom models is not available, Aitta already provides models for you to explore through the web UI and API endpoints using Python libraries <a class="reference external" href="https://pypi.org/project/aitta-client/"><code class="docutils literal notranslate"><span class="pre">aitta-client</span></code></a> and <a class="reference external" href="https://pypi.org/project/openai/"><code class="docutils literal notranslate"><span class="pre">openai</span></code></a>. In the near future it will also be possible to create embeddings (numerical representations of real-world objects) of the data using Aitta.</p>
+<section id="understanding-aitta-api-and-python-client">
+<h2>Understanding Aitta API and Python Client<a class="headerlink" href="#understanding-aitta-api-and-python-client" title="Link to this heading">#</a></h2>
+<p>Aitta makes models and inference tasks available via a REST API, so you can directly communicate with it via HTTP if you want. However, you don’t need to know how to use REST APIs or understand all the HTTP methods involved. With just a few lines of code, you can utilize the Python client created by the Aitta developers.</p>
+<p>Aitta makes models and inference tasks available via a REST API, allowing direct communication via HTTP. You can access the <a class="reference external" href="https://api-staging-aitta.2.rahtiapp.fi/docs">AITTA API reference documentation</a> to explore details about endpoints, parameters, and responses.</p>
+<blockquote>
+<div><p><strong>API-term definitions:</strong></p>
+<ul class="simple">
+<li><p><strong>API (Application Programming Interface)</strong>: An API allows one program to request services or data from another program, without needing to understand its internal workings.</p></li>
+<li><p><strong>REST (Representational State Transfer) API</strong>: A REST API is a type of API that allows different applications to communicate with each other over HTTP requests in a simple, scalable, and stateless manner.</p></li>
+<li><p><strong>API Endpoint</strong>: Specific URL within an API to access or store specific resources or issue a particular command to the system.</p></li>
+<li><p><strong>API client</strong>: A program or tool used to communicate with APIs.</p></li>
+</ul>
+</div></blockquote>
+<p><strong>However, you don’t need to be familiar with REST APIs or HTTP methods. Instead, you can use the Python client developed by the Aitta team to interact with the API in just a few lines of code.</strong></p>
+</section>
+<section id="resource-management">
+<h2>Resource management<a class="headerlink" href="#resource-management" title="Link to this heading">#</a></h2>
+<p>Aitta allocates resources on demand from the European top supercomputer instead of wasting money and energy by reserving heavy static servers, which are possibly idling most of the time, for running the models. At the moment, supercomputer resources are allocated automatically and freed after a certain period if time.</p>
+<p>Since Aitta is still in development phase, it doesn’t consume users’ billing units. When the service is officially launched, this will change.</p>
+</section>
+<section id="using-chat-based-llms-with-aitta-api">
+<h2>Using chat-based LLMs with Aitta API<a class="headerlink" href="#using-chat-based-llms-with-aitta-api" title="Link to this heading">#</a></h2>
+<p>Using the model through the API with the Python client is straightforward and user-friendly, requiring only a few lines of code to get started.</p>
+<p>First, we are going to obtain an API key and configure the Aitta client with it, load the model and set up the OpenAI client for compatibility. Once these steps are completed, you can perform chat completions - send prompts and receive responses.</p>
+<p>In the upcoming exercises, we will go through step by step the process of using the Python client to integrate and work with LLMs via the Aitta API, helping you become comfortable with the workflow.</p>
+<p>The diagram below illustrates the process of making an API call for chat completions for the first time:</p>
+<p><img alt="first-api-call-for-chatcompletions" src="../_images/API-chat-completions-bold1.png" /></p>
+<p><em>Generating the first response might take some time. Starting a new worker in the LUMI Supercomputer takes some time.</em></p>
+</section>
+<section id="aitta-as-one-of-the-mlops-tools">
+<h2>Aitta as one of the MLOps tools<a class="headerlink" href="#aitta-as-one-of-the-mlops-tools" title="Link to this heading">#</a></h2>
+<p>Aitta is here to complement provided <a class="reference external" href="https://en.wikipedia.org/wiki/MLOps">MLOps</a> (Machine Learning Operations) tools. One of the existing MLOps tools is MLFlow; you can check this <a class="reference external" href="https://github.com/CSCfi/puhti_mlflow_tutorial">tutorial</a> for using MLFlow in CSC’s supercomputers.</p>
+</section>
+<section id="exercise-time">
+<h2>Exercise time!<a class="headerlink" href="#exercise-time" title="Link to this heading">#</a></h2>
+<p>Coding exercises are available through <a class="reference external" href="https://noppe.2.rahtiapp.fi/welcome">CSC’s Noppe service</a> for interactive web based applications (<a class="reference external" href="https://docs.csc.fi/cloud/noppe/">CSC Docs</a>). An application for this course is set under <strong>Machine Learning</strong> workspace. Basic knowledge of Python programming and Jupyter notebooks is required for the exercises. For more information on using Jupyter Notebooks, visit <a class="reference external" href="https://docs.jupyter.org/en/latest/index.html">Jupyter Documentation</a>. The accepted authentication methods to access Noppe are CSC account, Haka, Virtu, or <a class="reference external" href="http://MOOC.fi">MOOC.fi</a> credits.</p>
+<p>Find the application <strong>Aitta - LLM Inference</strong> for this course and start a session.</p>
+<p><img alt="start-application" src="../_images/start-application-session.png" /></p>
+<p><strong>Activated Noppe instance is valid for 4 hours!</strong></p>
+<section id="exercise-1-log-into-aitta-website">
+<h3>Exercise 1: Log into Aitta website<a class="headerlink" href="#exercise-1-log-into-aitta-website" title="Link to this heading">#</a></h3>
+<p>First you are going to log into Aitta website and follow instructions:</p>
+<ul class="simple">
+<li><p>Log into Aitta website <a class="reference external" href="https://staging-aitta.2.rahtiapp.fi/public">https://staging-aitta.2.rahtiapp.fi/public</a></p></li>
+<li><p>Which models can you find? Can you input some text in the Web UI after choosing a model to use?</p></li>
+<li><p>Do you find the place for API key generation?</p></li>
+<li><p>Take a look around, can you find documentation for Aitta Client usage?</p></li>
+</ul>
+</section>
+<section id="exercise-2-chat-completions-with-lumiopen-poro-34b-chat-model">
+<h3>Exercise 2: Chat completions with LumiOpen/Poro-34B-chat model<a class="headerlink" href="#exercise-2-chat-completions-with-lumiopen-poro-34b-chat-model" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>Try to use Poro chat model <strong><a class="reference internal" href="../exercises/02_Poro-70B-instruct-completions.html"><span class="std std-doc">02_Poro-70B-instruct-completions.ipynb</span></a></strong></p></li>
+<li><p>Refine parameters that affect the output</p></li>
+</ul>
+</section>
+<section id="exercise-3-tokenize-text-using-lumiopen-llama-poro-2-70b-base-model-s-tokenizer">
+<h3>Exercise 3: Tokenize text using LumiOpen/Llama-Poro-2-70B-base model’s tokenizer<a class="headerlink" href="#exercise-3-tokenize-text-using-lumiopen-llama-poro-2-70b-base-model-s-tokenizer" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p>See how text is tokenized using LumiOpen/Llama-Poro-2-70B-base model’s tokenizer in the <strong><a class="reference internal" href="../exercises/03_poro-tokenizer.html"><span class="std std-doc">03_poro-tokenizer.ipynb</span></a></strong></p></li>
+</ul>
+<p><strong>NOTE!</strong></p>
+<p>Your work is not saved in Noppe. You should download preferred files if you want to retain your work after Noppe instance times out.</p>
+<p>You can download a single file by going to the <strong>File-menu</strong> or by right-clicking the file and selecting <strong>Download</strong> from the dropdown menu.</p>
+<p><img alt="dowload file" src="../_images/download_noppe.png" /></p>
+<p><strong>Be careful not to share your API Key anywhere.</strong></p>
+</section>
+</section>
+<section id="next-steps">
+<h2>Next steps<a class="headerlink" href="#next-steps" title="Link to this heading">#</a></h2>
+<p>Now we have covered first steps of using API for generating text with LLMs. You can move on to next section,  <a class="reference internal" href="04_usecases_of_llms.html"><span class="std std-doc"><strong>Usecases of LLMs</strong></span></a>.</p>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./material"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="02_inference.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">2. Inference - using trained LLMs</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="04_usecases_of_llms.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">4. Usecases of LLMs</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-aitta-api-and-python-client">Understanding Aitta API and Python Client</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resource-management">Resource management</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#using-chat-based-llms-with-aitta-api">Using chat-based LLMs with Aitta API</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#aitta-as-one-of-the-mlops-tools">Aitta as one of the MLOps tools</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-time">Exercise time!</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-1-log-into-aitta-website">Exercise 1: Log into Aitta website</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-2-chat-completions-with-lumiopen-poro-34b-chat-model">Exercise 2: Chat completions with LumiOpen/Poro-34B-chat model</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#exercise-3-tokenize-text-using-lumiopen-llama-poro-2-70b-base-model-s-tokenizer">Exercise 3: Tokenize text using LumiOpen/Llama-Poro-2-70B-base model’s tokenizer</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#next-steps">Next steps</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By CSC Training
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

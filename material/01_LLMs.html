@@ -1,0 +1,738 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>1. Large Language Models (LLMs) &#8212; LLM Inference using Aitta</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="../_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="../_static/togglebutton.css?v=9c3e77be" />
+    <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="../_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="../_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="../_static/copybutton.js?v=f281be69"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="../_static/togglebutton.js?v=1ae7504c"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="../_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="../_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'material/01_LLMs';</script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="2. Inference - using trained LLMs" href="02_inference.html" />
+    <link rel="prev" title="Welcome: Course introduction" href="00_welcome.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../README.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/LAIF_logo_dark.png" class="logo__image only-light" alt="LLM Inference using Aitta - Home"/>
+    <script>document.write(`<img src="../_static/LAIF_logo_dark.png" class="logo__image only-dark" alt="LLM Inference using Aitta - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="../README.html">
+                    Introduction to using Large Language Models through inference platform Aitta
+                </a>
+            </li>
+        </ul>
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Materials</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="README.html">README.md</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="00_welcome.html">Welcome: Course introduction</a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#">1. Large Language Models (LLMs)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="02_inference.html">2. Inference - using trained LLMs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="03_aitta.html">3. Aitta AI inference platform</a></li>
+<li class="toctree-l2"><a class="reference internal" href="04_usecases_of_llms.html">4. Usecases of LLMs</a></li>
+</ul>
+</details></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Exercises</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../exercises/README.html">Jupyter notebook exercises</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../exercises/02_Poro-70B-instruct-completions.html">Chat completions with LumiOpen/Llama-Poro-2-70B-Instruct</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../exercises/03_poro-tokenizer.html">Tokenize text using LumiOpen/Llama-Poro-2-70B-Instruct’s tokenizer</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../exercises/04_prompt-testing.html">Prompt testing</a></li>
+
+
+
+<li class="toctree-l2"><a class="reference internal" href="../exercises/05_usecases_Poro-70B-instruct.html">Real use cases for chat-tuned models</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../exercises/06_summarizate-abstracts.html">Abstract summarization</a></li>
+
+<li class="toctree-l2"><a class="reference internal" href="../exercises/07_rag_basics.html">Simple Retrieval Augmented Generation (RAG) Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../exercises/08_simpleRAG-using-FAISS.html">Simple RAG example using Facebook AI Similarity Search (FAISS)</a></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/csc-training/llm-inference-using-aitta" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/csc-training/llm-inference-using-aitta/edit/main/./material/01_LLMs.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/csc-training/llm-inference-using-aitta/issues/new?title=Issue%20on%20page%20%2Fmaterial/01_LLMs.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/material/01_LLMs.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>1. Large Language Models (LLMs)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-large-language-models">What are large language models?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-phases">Training phases</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-training-learning-patterns-from-data">Pre-training: learning patterns from data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fine-tuning-adapting-to-specific-tasks">Fine-tuning: adapting to specific tasks</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-training-vs-fine-tuning"><strong>Pre-training vs. Fine-tuning</strong></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation-after-training">Evaluation after training</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-opensource-llms">Understanding opensource LLMs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-poro-a-family-of-open-models">Example: Poro - A family of open models</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-interactions-with-poro-chat-models">Example interactions with Poro-chat-models:</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="large-language-models-llms">
+<h1>1. Large Language Models (LLMs)<a class="headerlink" href="#large-language-models-llms" title="Link to this heading">#</a></h1>
+<section id="what-are-large-language-models">
+<h2>What are large language models?<a class="headerlink" href="#what-are-large-language-models" title="Link to this heading">#</a></h2>
+<p>LLMs are AI systems that use deep learning algorithms to process and generate human-like text. From chatbots to automatic translation and content creation, LLMs are revolutionizing how we interact with technology. They function by receiving an input (prompt), for which they iteratively predict the most probable next words and thus produce a continuation of the prompt in natural language. Fine-tuned chat models are optimized to produce responses that align with user requests. Generation proceeds until the model emits a stop token or reaches a predetermined length limit. These models have been trained to predict the next words in a sentence based on massive amounts of training data, enabling them to generate coherent and contextually relevant responses.</p>
+<p><strong>Key capabilities of LLMs:</strong></p>
+<ul class="simple">
+<li><p><strong>Text prediction:</strong> Generating coherent text based on input.</p></li>
+<li><p><strong>Summarization:</strong> Condensing long documents into concise summaries.</p></li>
+<li><p><strong>Translation:</strong> Converting text between languages.</p></li>
+<li><p><strong>Content generation:</strong> Writing articles, stories or even code.</p></li>
+</ul>
+</section>
+<section id="training-phases">
+<h2>Training phases<a class="headerlink" href="#training-phases" title="Link to this heading">#</a></h2>
+<p>Training an LLM is a two-step process: pre-training and fine-tuning. Both phases are essential for building an effective model that can understand and generate human-like text.</p>
+<p>The image below illustrates the high-level data flow in LLM training phases.</p>
+<p><img alt="pretraining-finetuning" src="../_images/pretraining-finetuning.png" /></p>
+<section id="pre-training-learning-patterns-from-data">
+<h3>Pre-training: learning patterns from data<a class="headerlink" href="#pre-training-learning-patterns-from-data" title="Link to this heading">#</a></h3>
+<p>During the self-supervised pre-training phase, LLMs analyze massive amounts of text to recognize linguistic patterns. The training data typically comes from diverse sources such as websites, online books, research papers, and code repositories. The resulting pre-trained models can generate text completions but lack fine-grained task awareness. Pre-training datasets often lack domain-specific knowledge, requiring further refinement. Sometimes pre-trained models can be difficult to use and produce harmful outputs. Pre-trained models reflect the data they are trained on, meaning they may contain biases or produce unexpected outputs. Since pre-training covers general language patterns rather than specific tasks, additional fine-tuning is often required to align the model with real-world applications and ethical considerations.</p>
+<blockquote>
+<div><p>Note: Pre-trained models are sometimes referred to as ‘base models.’ However, ‘pre-trained model’ is sometimes used to mean an instruction-tuned model, which is then further fine-tuned with domain-specific data.</p>
+</div></blockquote>
+</section>
+<section id="fine-tuning-adapting-to-specific-tasks">
+<h3>Fine-tuning: adapting to specific tasks<a class="headerlink" href="#fine-tuning-adapting-to-specific-tasks" title="Link to this heading">#</a></h3>
+<p>Fine-tuning is a set of techniques used to modify a pre-trained model to improve its performance on specific tasks. This involves training the model on specialized datasets to refine its responses.</p>
+<p>Types of fine-tuning:</p>
+<ul class="simple">
+<li><p><strong>Instruction-tuning</strong>: The model is trained with input-output pairs to follow specific instructions, often enhanced with Reinforcement Learning from Human Feedback (RLHF) to improve its ability to understand and respond to prompts effectively.</p></li>
+<li><p><strong>Chat-tuning</strong>: Fine-tuning the model to perform well in conversational contexts, improving its ability to engage in natural, coherent dialogue.</p></li>
+<li><p><strong>Reinforcement Learning from Human Feedback (RLHF)</strong>: Improves responses based on human evaluations, refining the model’s behavior and reducing harmful or biased outputs.</p></li>
+<li><p><strong>Task-specific tuning</strong>: Adapting models for applications like question-answering, summarization, and sentiment analysis.</p></li>
+</ul>
+<p>For those interested in practical examples of fine-tuning, a <a class="reference external" href="https://github.com/CSCfi/llm-fine-tuning-examples">Git repository</a> is available, offering scripts for LLM fine-tuning on Puhti, Mahti, or LUMI.</p>
+</section>
+<section id="pre-training-vs-fine-tuning">
+<h3><strong>Pre-training vs. Fine-tuning</strong><a class="headerlink" href="#pre-training-vs-fine-tuning" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature</p></th>
+<th class="head"><p>Pre-training</p></th>
+<th class="head"><p>Fine-tuning</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Purpose</p></td>
+<td><p>Learning general language patterns</p></td>
+<td><p>Adapting to specific tasks</p></td>
+</tr>
+<tr class="row-odd"><td><p>Training data</p></td>
+<td><p>Massive, diverse text datasets</p></td>
+<td><p>Task-specific datasets</p></td>
+</tr>
+<tr class="row-even"><td><p>Result</p></td>
+<td><p>Base model with broad understanding</p></td>
+<td><p>Improved performance for targeted applications</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</section>
+<section id="evaluation-after-training">
+<h2>Evaluation after training<a class="headerlink" href="#evaluation-after-training" title="Link to this heading">#</a></h2>
+<p>Evaluating an LLM is essential to ensure it produces accurate, reliable, and unbiased results. While there are many ways to assess a model’s performance, this course does not dive deeply into evaluation methods. Instead, we focus on how to use LLMs effectively in practical applications.</p>
+<p>For those interested in learning more, there are many resources available on model evaluation techniques, such as accuracy testing, bias detection, and human feedback assessment. For further reading, see this <a class="reference external" href="https://github.com/huggingface/evaluation-guidebook">“LLM Evaluation guidebook”</a> hosted by Hugging Face.</p>
+</section>
+<section id="understanding-opensource-llms">
+<h2>Understanding opensource LLMs<a class="headerlink" href="#understanding-opensource-llms" title="Link to this heading">#</a></h2>
+<p>Many LLMs are available as open-source models, each with different licenses and capabilities.
+<a class="reference external" href="https://huggingface.co/">Hugging Face</a> is a platform where researchers and developers share open-source LLMs, fine-tuned models and datasets. Users can browse the <a class="reference external" href="https://huggingface.co/models">Model Hub</a> to find models suited for various tasks and run them eg. locally with tools like the <code class="docutils literal notranslate"><span class="pre">transformers</span></code> library. Developers can also easily integrate and fine-tune these models for specific applications.</p>
+<p><strong>Model performance depends on several key factors:</strong></p>
+<ul class="simple">
+<li><p><strong>Training data:</strong></p>
+<ul>
+<li><p>The dataset quality directly impacts accuracy, biases, and domain knowledge.</p></li>
+</ul>
+</li>
+<li><p><strong>Optimization for applications:</strong></p>
+<ul>
+<li><p>Some models are fine-tuned for tasks like summarization, translation, or chatbot interactions.</p></li>
+</ul>
+</li>
+<li><p><strong>Model size &amp; parameters:</strong></p>
+<ul>
+<li><p>More parameters typically improve coherence and contextual understanding.</p></li>
+<li><p>Larger models require higher computational resources, increasing memory demands and processing costs.</p></li>
+<li><p>Techniques such as reduced floating point precision (e.g., using bfloat16 instead of float32) and quantization can reduce model size and computational requirements without decreasing the number of parameters.</p></li>
+</ul>
+</li>
+</ul>
+<p>Additionally, it’s important to note that each model has a defined context length, which is the maximum number of tokens it can process at once. This limitation can impact the model’s ability to generate coherent responses. Models with shorter context lengths may struggle with longer inputs, which could result in truncated responses or loss of context.</p>
+<p>Since an LLM is only as good as its training data, it’s essential to review which datasets were used in its development. Understanding a model’s architecture, dataset composition, and licensing can help determine its suitability for specific applications.</p>
+<section id="example-poro-a-family-of-open-models">
+<h3>Example: Poro - A family of open models<a class="headerlink" href="#example-poro-a-family-of-open-models" title="Link to this heading">#</a></h3>
+<p>The <strong>Poro</strong> models are developed by Finnish institutions and Silo AI. The name <em>‘Poro’</em> comes from the Finnish word for reindeer. First models - <a class="reference external" href="https://huggingface.co/collections/LumiOpen/poro-34b-66506aaedb8d705069ad7ecb"><code class="docutils literal notranslate"><span class="pre">Poro-34B</span></code></a>-  were released in 2023 and the latest - <a class="reference external" href="https://huggingface.co/collections/LumiOpen/poro-2-6835bec8186e98712b061f02"><code class="docutils literal notranslate"><span class="pre">Poro</span> <span class="pre">2</span></code></a> in 2025. Read more about developing the Poro 2 models <a class="reference external" href="https://www.amd.com/en/blogs/2025/silo-ai-continued-pretraining-provides-blueprint-for-gla.html">here</a>.</p>
+<p>You can view all the models released under the <code class="docutils literal notranslate"><span class="pre">LumiOpen</span></code> community on <a class="reference external" href="https://huggingface.co/LumiOpen">Hugging Face</a>. The community name likely reflects the use of the LUMI supercomputer in training these models.</p>
+<p>There are both base models and chat-tuned models in the Poro family. The table below highlights key examples:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Model</p></th>
+<th class="head"><p>Features</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Poro-34B</p></td>
+<td><p>A foundational GPT (Generative pre-trained transformer) model trained on diverse datasets.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Poro-34B-chat</p></td>
+<td><p>A fine-tuned version optimized for conversational AI, capable of answering questions, following instructions, and generating high-quality translations.</p></td>
+</tr>
+<tr class="row-even"><td><p>Llama-Poro-2-8B-base</p></td>
+<td><p>A decoder-only transformer created through continued pretraining of Llama 3.1 8B to add Finnish language capabilities.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Llama-Poro-2-8B-Instruct</p></td>
+<td><p>An instruction-following chatbot model created through supervised fine-tuning (SFT) and Direct Preference Optimization (DPO) of the Poro 2 8B Base model.</p></td>
+</tr>
+<tr class="row-even"><td><p>Llama-Poro-2-70B-base</p></td>
+<td><p>A decoder-only transformer created through continued pretraining of Llama 3.1 70B to add Finnish language capabilities.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Llama-Poro-2-70B-Instruct</p></td>
+<td><p>An instruction-following chatbot model created through supervised fine-tuning (SFT) and Direct Preference Optimization (DPO) of the Poro 2 70B Base model.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Currently available through Aitta:</strong></p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#LumiOpen/Llama-Poro-2-70B-Instruct"><span class="xref myst">LumiOpen/Llama-Poro-2-70B-Instruct</span></a></p></li>
+<li><p><a class="reference external" href="https://huggingface.co/LumiOpen/Poro-34B">LumiOpen/Poro-34B</a></p></li>
+<li><p><a class="reference external" href="https://huggingface.co/LumiOpen/Poro-34B-chat">LumiOpen/Poro-34B-chat</a></p></li>
+</ul>
+<section id="example-interactions-with-poro-chat-models">
+<h4>Example interactions with Poro-chat-models:<a class="headerlink" href="#example-interactions-with-poro-chat-models" title="Link to this heading">#</a></h4>
+<p>The images below shows responses from two models - <code class="docutils literal notranslate"><span class="pre">LumiOpen/Poro-34B-Chat</span></code> and  the <code class="docutils literal notranslate"><span class="pre">LumiOpen/Llama-Poro-2-70B-Instruct</span></code> - to the same input prompt.</p>
+<p>Default settings were used (e.g., the <code class="docutils literal notranslate"><span class="pre">max_completion_tokens</span></code> parameter was not modified).</p>
+<p>Take a look — what do you thinks about these answers?</p>
+<p><img alt="poro-generation-comparison2.png" src="../_images/poro-generation-comparison2.png" /></p>
+<p>While LLM responses are not always factually accurate, LLMs are still powerful tools for various tasks. They can generate text, summarize information, assist with coding, translate languages and much more. The key is to understand their limitations and verify critical information when needed.</p>
+</section>
+</section>
+<section id="conclusion">
+<h3>Conclusion<a class="headerlink" href="#conclusion" title="Link to this heading">#</a></h3>
+<p>LLMs are powerful AI tools, but their effectiveness depends on the quality of their training data, fine-tuning techniques and hardware capabilities. As one of the European AI Factories LUMI AI Factory (LAIF) is working on improving access to training datasets and expanding accessibility to open-source AI models, helping to accelerate LLM development. One of the tools LAIF provides is the AI inference platform Aitta. Before we dive into Aitta, let’s explore inference — how trained models generate responses efficiently and accurately in real-world applications.</p>
+<p>You can move on to <a class="reference internal" href="02_inference.html"><span class="std std-doc"><strong>Inference - Using Trained LLMs</strong></span></a>.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./material"
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="00_welcome.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Welcome: Course introduction</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="02_inference.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">2. Inference - using trained LLMs</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#what-are-large-language-models">What are large language models?</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#training-phases">Training phases</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-training-learning-patterns-from-data">Pre-training: learning patterns from data</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fine-tuning-adapting-to-specific-tasks">Fine-tuning: adapting to specific tasks</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pre-training-vs-fine-tuning"><strong>Pre-training vs. Fine-tuning</strong></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#evaluation-after-training">Evaluation after training</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#understanding-opensource-llms">Understanding opensource LLMs</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#example-poro-a-family-of-open-models">Example: Poro - A family of open models</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#example-interactions-with-poro-chat-models">Example interactions with Poro-chat-models:</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusion">Conclusion</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By CSC Training
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="../_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
